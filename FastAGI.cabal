@@ -14,4 +14,4 @@ cabal-version:       >=1.8
 library
   exposed-modules:     Network.AGI, Network.AGI.Parser, Network.AGI.Types
   -- other-modules:       
-  build-depends:       base ==4.6.*, conduit ==1.0.*, network-conduit ==1.0.*, stm-conduit ==2.0.*, attoparsec-conduit ==1.0.*, bytestring ==0.10.*, resourcet ==0.4.*, stm-chans ==2.0.*, stm ==2.4.*, network ==2.4.*, mtl ==2.1.*, attoparsec ==0.10.*, unordered-containers ==0.2.*
+  build-depends:       base ==4.6.*, conduit ==1.0.*, network-conduit ==1.0.*, stm-conduit ==2.0.*, attoparsec-conduit ==1.0.*, bytestring ==0.10.*, resourcet ==0.4.*, stm-chans ==2.0.*, stm ==2.4.*, network ==2.4.*, mtl ==2.1.*, attoparsec ==0.10.*, unordered-containers ==0.2.*, transformers ==0.3.*

@@ -1,13 +1,15 @@
 {-# LANGUAGE DeriveGeneric, RecordWildCards, RankNTypes, DoAndIfThenElse, OverloadedStrings #-}
 module Network.AGI
     ( startServer
-    , ServerAppIf(..)
-    , ServerApp
+    , module Network.AGI.ServerTypes
+    , module Network.AGI.Functions
     )
 where
 
+import Network.AGI.ServerTypes
 import Network.AGI.Types
 import Network.AGI.Parser
+import Network.AGI.Functions
 
 import Data.Conduit
 import Data.Conduit.Network
@@ -27,27 +29,19 @@ import Control.Applicative
 import Control.Concurrent hiding (yield)
 import Network.Socket.Internal (SockAddr(..))
 import Control.Monad.Trans
+import Control.Monad.Trans.Reader
 import Data.Maybe
 import qualified Data.Attoparsec.ByteString.Char8 as Atto
 import qualified Data.HashMap.Strict as HM
 
-type ServerApp cMsg sMsg = ServerAppIf cMsg sMsg -> ResourceT IO ()
-
-data ServerAppIf cMsg sMsg
-    = ServerAppIf
-    { recieveAGIResponse :: STM (Maybe cMsg)
-    , sendAGICommand    :: sMsg -> STM ()
-    , connId           :: String
-    }
-
-startServer :: ServerApp AGIResult AGICommand -> IO ()
+startServer :: AGI () -> IO ()
 startServer serverApp =
     do putStrLn "Launching AGI Server on port 4573"
        runTCPServer (serverSettings 4573 HostAny) (app serverApp)
 
 chanSize = 15
 
-app :: ServerApp AGIResult AGICommand -> Application IO
+app :: AGI () -> Application IO
 app runServerApp app =
     main
     where
@@ -71,7 +65,7 @@ app runServerApp app =
              let readAction = fmap snd <$> readTBMChan recvChan
                  writeAction = writeTBMChan sendChan
                  serverAppIf = ServerAppIf readAction writeAction sid
-             runServerApp serverAppIf
+             runReaderT runServerApp (serverAppIf)
       s = fromMaybe "" (fmap ((++"_") . show) (appLocalAddr app)) ++ "to_" ++ show (appSockAddr app)
       sink = transPipe lift (appSink app)
       source = transPipe lift (appSource app)
