@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings, RankNTypes #-}
 module Network.AGI.Types where
 
-import qualified Data.ByteString as BS
+import qualified Data.ByteString.Char8 as BS
 
 type Channel = BS.ByteString
 type OptChannel = Maybe Channel
@@ -13,7 +13,8 @@ data AGICommand
 
 serializeCmd :: AGICommand -> BS.ByteString
 serializeCmd Answer = "ANSWER"
-serializeCmd WaitForDigit timeout = "WAIT FOR DIGIT " ++ (show timeout)
+serializeCmd (WaitForDigit timeout) =
+    BS.concat ["WAIT FOR DIGIT ", (BS.pack $ show timeout)]
 
 data AGIResult
    = AGIFailure

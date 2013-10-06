@@ -1,5 +1,7 @@
 module Network.AGI.Functions where
 
+import Data.Maybe
+
 import Network.AGI.Types
 import Network.AGI.ServerTypes
 
@@ -12,4 +14,4 @@ answer =
 
 waitForDigit :: Maybe Int -> AGI AGIResult
 waitForDigit timeout =
-    blockWithCommand (WaitForDigit (fromMaybe -1 timeout))
+    blockWithCommand (WaitForDigit (fromMaybe (-1) timeout))
