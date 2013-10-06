@@ -8,10 +8,12 @@ type OptChannel = Maybe Channel
 
 data AGICommand
    = Answer
+   | WaitForDigit Int
    deriving (Show, Eq)
 
 serializeCmd :: AGICommand -> BS.ByteString
 serializeCmd Answer = "ANSWER"
+serializeCmd WaitForDigit timeout = "WAIT FOR DIGIT " ++ (show timeout)
 
 data AGIResult
    = AGIFailure
