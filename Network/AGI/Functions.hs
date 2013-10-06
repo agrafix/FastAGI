@@ -15,3 +15,7 @@ answer =
 waitForDigit :: Maybe Int -> AGI AGIResult
 waitForDigit timeout =
     blockWithCommand (WaitForDigit (fromMaybe (-1) timeout))
+
+hangup :: OptChannel -> AGI AGIResult
+hangup ch =
+    blockWithCommand (Hangup ch)

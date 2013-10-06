@@ -9,10 +9,14 @@ type OptChannel = Maybe Channel
 data AGICommand
    = Answer
    | WaitForDigit Int
+   | Hangup OptChannel
    deriving (Show, Eq)
 
 serializeCmd :: AGICommand -> BS.ByteString
 serializeCmd Answer = "ANSWER"
+serializeCmd (Hangup Nothing) = "HANGUP"
+serializeCmd (Hangup (Just ch)) =
+    BS.concat ["HANGUP ", ch]
 serializeCmd (WaitForDigit timeout) =
     BS.concat ["WAIT FOR DIGIT ", (BS.pack $ show timeout)]
 
